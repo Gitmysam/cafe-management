@@ -52,6 +52,12 @@ router.get(
   productController.getProduct
 );
 
+router.delete(
+  "/product/:id",
+  authorization.authenticateToken,
+  productController.deleteProduct
+);
+
 //for report generate
 router.post(
   "/generate-report",

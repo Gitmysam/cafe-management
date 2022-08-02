@@ -3,6 +3,7 @@ const md5 = require("md5");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
+const validator = require("email-validator");
 
 module.exports.signupUser = async (req, res) => {
   try {
@@ -10,7 +11,10 @@ module.exports.signupUser = async (req, res) => {
     if (!["admin", "user"].includes(user.role)) {
       throw new Error("Role must be admin or user!");
     }
-    //creating id
+    const validateEmail = await validator.validate(user.email);
+    if (!validateEmail) {
+      throw new Error("Email is not valid!");
+    } //creating id
     const userId = await md5(`${user.name}${user.email}`);
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(user.password, salt);
